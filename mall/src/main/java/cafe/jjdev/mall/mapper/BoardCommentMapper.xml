@@ -1,0 +1,80 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cafe.jjdev.mall.mapper.BoardCommentMapper">
+
+	<!-- 댓글조회(수정폼 렌더링 용) -->
+	<select id="selectBoardCommentListByPK"
+			parameterType="int"
+			resultType="cafe.jjdev.mall.vo.BoardComment">
+		SELECT
+			 board_comment_no AS boardCommentNo
+			,board_no AS boardNo
+			,board_comment_content AS boardCommentContent
+			,board_comment_user AS boardCommentUser
+		FROM
+			board_comment
+		WHERE
+			board_comment_no = #{boardCommentNo}	
+	</select>
+	
+	<!-- 댓글수정 처리 -->
+	<update id="updateBoardComment" parameterType="cafe.jjdev.mall.vo.BoardComment">
+		UPDATE
+			board_comment
+		SET
+			board_comment_content = #{boardCommentContent}
+			,board_comment_user = #{boardCommentUser}
+		WHERE
+			board_comment_no = #{boardCommentNo}
+		AND
+			board_comment_pw = #{boardCommentPw}
+	</update>
+	
+	<!-- 개별 댓글 삭제용 : boardCommentNo(PK)와 boardCommentPw(댓글비번)가 모두 만족해야 삭제가능 -->
+	<delete id="deleteBoardCommentByCommentNo" parameterType="cafe.jjdev.mall.vo.BoardComment">
+		DELETE FROM board_comment
+		WHERE
+				board_comment_no = #{boardCommentNo}
+		AND
+				board_comment_pw = #{boardCommentPw}
+	</delete>
+	
+	<!-- 어떤 게시글을 삭제하려면 게시글 PK를 FK로 참조하고 있는 관련 댓글부터 먼저 삭제되야 해당 게시글이 삭제된다 --> 
+	<delete id="deleteBoardCommentByBoardNo"
+			parameterType="int">
+		DELETE FROM board_comment
+		WHERE board_no = #{boardNo}
+	</delete>
+	
+	<!-- 게시글에 달린 댓글까지 출력하기 위한 쿼리로 확인하고자 하는 게시글의 PK를 FK로 참조하고 있는 모든 댓글을 조회한다 -->
+	<select id="selectBoardCommentListByBoardNo"
+			parameterType="int"
+			resultType="cafe.jjdev.mall.vo.BoardComment">
+		SELECT
+			 board_comment_no AS boardCommentNo
+			,board_no AS boardNo
+			,board_comment_content AS boardCommentContent
+			,board_comment_user AS boardCommentUser
+		FROM
+			board_comment
+		WHERE
+			board_no = #{boardNo}	
+	</select>
+	
+	<!-- 댓글 등록 -->
+	<insert id="insertBoardComment" parameterType="cafe.jjdev.mall.vo.BoardComment">
+		INSERT INTO
+			board_comment(
+				 board_no
+				,board_comment_content
+				,board_comment_user
+				,board_comment_pw
+		) VALUES (
+				 #{boardNo}
+				,#{boardCommentContent}
+				,#{boardCommentUser}
+				,#{boardCommentPw}
+		)
+	</insert>
+		
+</mapper>

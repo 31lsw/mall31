@@ -1,0 +1,67 @@
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="cafe.jjdev.mall.mapper.BoardFileMapper">
+	<update id="updateBoardFileDeleteState" parameterType="int">
+		UPDATE
+			board_file
+		SET
+			board_file_delete_state = 1
+		WHERE
+			board_file_no = #{boardFileNo}
+	</update>
+
+	<update id="updateBoardFile"
+			parameterType="cafe.jjdev.mall.vo.BoardFile">
+		UPDATE board_file
+		SET board_no = #{boardNo}
+			,board_file_origin_name = #{boardFileOriginName}
+			,board_file_save_name = #{boardSaveName}
+			,board_file_ext = #{boardFileExt}
+			,board_file_size = #{boardFileSize}
+			,board_file_type = #{boardFileType}
+		WHERE board_file_no = #{boardFileNo}
+	</update>
+
+	<insert id="insertBoardFile"
+		parameterType="cafe.jjdev.mall.vo.BoardFile">
+		INSERT INTO board_file(
+			board_no
+			,board_file_origin_name
+			,board_file_save_name
+			,board_file_ext
+			,board_file_size
+			,board_file_type
+		) VALUES (
+			#{boardNo}
+			,#{boardFileOriginName}
+			,#{boardFileSaveName}
+			,#{boardFileExt}
+			,#{boardFileSize}
+			,#{boardFileType}
+		)
+	</insert>
+	<select id="selectBoardFileByFK" parameterType="int" resultType="cafe.jjdev.mall.vo.BoardFile">
+	<!-- VIEW 쪽에서 뭘  표시해줄지 선정 안했으므로 일단은 이름과 확장자와 관련된 칼럼(필드) 조회정보 반환한다 --> 
+		SELECT
+			board_file_no AS boardFileNo
+			,board_no AS boardNo
+			,board_file_origin_name AS boardFileOriginName
+			,board_file_save_name AS boardFileSaveName
+			,board_file_ext AS boardFileExt
+			,board_file_size AS boardFileSize
+			,board_file_delete_state AS boardFileDeleteState
+		FROM board_file
+		WHERE board_no = #{boardNo}
+	</select>
+	
+	<delete id="deleteBoardFileByBoardNo"
+			parameterType="int">	
+		DELETE FROM board_file
+        WHERE board_no = #{boardNo}
+        AND board_file_no = 1
+	</delete>
+	
+	
+</mapper>

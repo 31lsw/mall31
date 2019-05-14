@@ -1,0 +1,84 @@
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cafe.jjdev.mall.mapper.BoardMapper">
+	
+	<!-- 게시글 목록 -->
+	<select id="selectBoardList" parameterType="java.util.Map" resultType="cafe.jjdev.mall.vo.Board">
+		SELECT
+			board_no boardNo
+			,board_title boardTitle
+			,board_user boardUser
+			,board_date boardDate
+		FROM board
+		ORDER BY boardDate DESC
+		LIMIT #{beginRow}, #{rowPerPage}
+	</select>
+	
+	<!-- 게시글 총갯수 -->
+	<select id="selectBoardCount" resultType="int">
+		SELECT COUNT(*)
+		FROM board
+	</select>
+	
+	<!-- 게시글 상세보기 -->
+	<select id="selectBoard" parameterType="int" resultType="cafe.jjdev.mall.vo.Board">
+		SELECT
+			board_no boardNo
+			,board_title boardTitle
+			,board_content boardContent
+			,board_user boardUser
+			,board_date boardDate
+		FROM board
+		WHERE board_no = #{boardNo}
+	</select>
+	
+	<!-- 해당게시글 수정시 기존정보뿌리기 -->
+    <update id="updateBoard" parameterType="cafe.jjdev.mall.vo.Board">
+		UPDATE board
+		SET board_title = #{boardTitle}
+			, board_content = #{boardContent} 
+		WHERE board_no = #{boardNo}
+		AND board_pw = #{boardPw}
+    </update>
+    
+    <delete id="deleteBoard" parameterType="cafe.jjdev.mall.vo.Board">
+        DELETE FROM board
+        WHERE board_no = #{boardNo} 
+        AND board_pw = #{boardPw}
+    </delete>
+    
+					    <!-- 
+					    	테이블명을 다르게 적어놓고 실행하면 서비스 레이어의  @Transactional 기능이 뭔지 볼 수 있다.
+						    <delete id="deleteBoard" parameterType="cafe.jjdev.mall.vo.Board">
+						        DELETE FROM board_
+						        WHERE board_no = #{boardNo} 
+						        AND board_pw = #{boardPw}
+						    </delete> 
+					    -->
+    
+
+    
+    <insert id="insertBoard" parameterType="cafe.jjdev.mall.vo.Board">
+    	<!-- insert쿼리 뒤(AFTER)에 방금 insert된 키값을 받을 수 있다(문법) -->
+    	<selectKey resultType="int" keyProperty="boardNo" order="AFTER">
+            SELECT LAST_INSERT_ID()
+			<!-- 위의 함수는 가장 최근에 실행된 insert 문에 의해 생성된 column 중에 auto_increment column 에 해당하는 컬럼들 중 처음으로 자동 생성되어 성공적으로 insert 된 값을 리턴한다. -->
+        </selectKey>
+        INSERT INTO board(
+            board_pw
+            , board_title
+            , board_content
+            , board_user
+            , board_date
+        ) VALUES(
+            #{boardPw}
+            , #{boardTitle}
+            , #{boardContent}
+            , #{boardUser}
+            , now()
+        )
+    </insert>
+       
+</mapper>
