@@ -10,7 +10,6 @@
 <body>
 	<h1>INDEX</h1>
 	<h3>쇼핑몰 메인 페이지(local test.....)</h3>
-	
 	<div>
 		<ol>
 			<c:if test="${loginMember == null}">

@@ -43,8 +43,7 @@
 		<c:forEach items="${list}" var="productCommon">
 				<tr>
 					<td>${productCommon.productCommonNo}</td>
-					<td>${productCommon.productCommonName}</td>
-					
+					<td><a href="${pageContext.request.contextPath}/product/getProductCommonJoinProductByProductCommonNo?productCommonNo=${productCommon.productCommonNo}">${productCommon.productCommonName}</a></td>
 					<td>${productCommon.productCommonPrice}</td>
 					<td>${productCommon.productCommonDescription}</td>
 					<td>${productCommon.productCommonDate}</td>

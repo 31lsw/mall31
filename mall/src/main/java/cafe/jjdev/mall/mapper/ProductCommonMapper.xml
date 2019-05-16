@@ -8,9 +8,31 @@
 		SELECT COUNT(*)
 		FROM product_common
 	</select>
-
-	<!-- <resultMap type="cafe.jjdev.mall.vo.ProductCommon"
-				id="ProductCommonMap">
+	
+	<!-- 색상 선택시 해당 색상의 사이즈, 재고량 조회정보 가져간다 -->
+	<!-- 나중에 resultMap으로 쿼리결과 반환할 것 -->
+	<select id="selectProductSizeAndStockByProductColorAndProductCommonNo"
+			parameterType="cafe.jjdev.mall.vo.Product"
+			resultType="cafe.jjdev.mall.vo.Product">
+		SELECT
+			product_no AS productNo
+			,product_common_no AS productCommonNo
+			,product_color AS productColor
+			,product_size AS productSize
+			,product_stock AS productStock
+		FROM
+			product
+		WHERE
+			product_color = #{productColor}
+		AND
+			product_common_no = #{productCommonNo}
+		ORDER BY
+			product_size ASC
+	</select>
+	
+	
+	<resultMap type="cafe.jjdev.mall.vo.ProductCommon" id="ProductCommonMap">
+		
 		<result column="product_common_no" property="productCommonNo"/>
 		<result column="category_no" property="categoryNo"/>
 		<result column="product_common_name" property="productCommonName"/>
@@ -26,12 +48,13 @@
 			<result column="product_size" property="productSize"/>
 			<result column="product_stock" property="productStock"/>
 		</collection>
+		
 	</resultMap>
 	
-	2
-	<select id="selectProductCommonByCategory"
-			parameterType="int"
-			resultType="ProductCommonMap">
+	<!-- 2, -->
+	<select id="selectProductCommonJoinProduct"
+			parameterType="cafe.jjdev.mall.vo.Product"
+			resultMap="ProductCommonMap">
 		SELECT
 			pc.product_common_no
 			,pc.category_no
@@ -43,15 +66,23 @@
 			,p.product_common_no
 			,p.product_color
 			,p.product_size
-			,p.product_stock			
+			,p.product_stock		
 		FROM
 			product_common AS pc
 		INNER JOIN
 			product AS p
 		ON
-			pc.product_common_no = p.product_common_no = #{productCommonNo}
-		WHERE pc.category_no = #{categoryNo}
-	</select> -->
+			pc.product_common_no = p.product_common_no
+		WHERE
+			pc.product_common_no = #{productCommonNo}
+	<if test="productColor != null">
+		AND
+			p.product_color = #{productColor}
+	</if>
+		ORDER BY
+			p.product_color ASC
+			,p.product_size ASC
+	</select>
 	
 	<!-- 1, 페이징, 검색(이름) -->
 	<select id="selectProductCommonList" parameterType="java.util.Map"
@@ -62,14 +93,14 @@
 			,product_common_name AS productCommonName
 			,product_common_price AS productCommonPrice
 			,product_common_description AS productCommonDescription
-			,product_common_date AS productCommonDate			
+			,product_common_date AS productCommonDate
 		FROM
 			product_common AS ProductCommon
 		WHERE
 			category_no = #{categoryNo}
-		<if test="searchWord != '%%'">
-			AND product_common_name like #{searchWord}
-		</if>
+	<if test="searchWord != '%%'">
+		AND product_common_name like #{searchWord}
+	</if>
 		LIMIT
 			#{startRow}, #{ROW_PER_PAGE}
 	</select>

@@ -362,7 +362,10 @@ public class BoardService {
 		
 		// test.... previous, next
 		int nextTest = endPage + 1; // 11, 21, 31, ...
-		int previousTest = endPage - 9; // 1, 11, 21, ...
+		int previousTest = startPage - 10; // -9, 11, 21, ...
+		if(previousTest < 1) {
+			previousTest = startPage;
+		}
 		
 		System.out.println(currentPage + "<- currentPage BoardService.java");
 		System.out.println(totalPage + "<- totalPage BoardService.java");

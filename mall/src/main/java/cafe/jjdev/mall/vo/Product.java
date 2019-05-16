@@ -42,4 +42,5 @@ public class Product {
 				+ productColor + ", productSize=" + productSize + ", productStock=" + productStock + "]";
 	}
 	
+	
 }

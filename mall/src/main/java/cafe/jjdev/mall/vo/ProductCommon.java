@@ -10,7 +10,6 @@ public class ProductCommon {
 	private String productCommonDescription;
 	private String productCommonDate;
 	private List<Product> products;
-	
 	public int getProductCommonNo() {
 		return productCommonNo;
 	}
@@ -53,7 +52,13 @@ public class ProductCommon {
 	public void setProducts(List<Product> products) {
 		this.products = products;
 	}
-	
+	@Override
+	public String toString() {
+		return "ProductCommon [productCommonNo=" + productCommonNo + ", categoryNo=" + categoryNo
+				+ ", productCommonName=" + productCommonName + ", productCommonPrice=" + productCommonPrice
+				+ ", productCommonDescription=" + productCommonDescription + ", productCommonDate=" + productCommonDate
+				+ ", products=" + products + "]";
+	}
 	
 	
 }
